@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - NAVIRA FINANCE</title>
+  <link rel="stylesheet" href="style.css"/>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+
+<body>
+					
+					<!-- Login -->
+<div class="container">
+       <h1>Login</h1>
+ <label for="username">Username</label>
+  <input type="text" id="username" placeholder="Username" />
+ <label for="pass">Password</label>
+   <div class="password-box">
+                                <input type="password" id="password" placeholder="Password">
+     
+     <span onclick="togglePassword('password', this)">🔒</span>
+</div>
+                    
+<button onclick="login()">Login</button>
+<button onclick="daftar()">Daftar</button>
+					
+					<!-- Profil -->
+<div class="container">
+    <h4>Profil User</h4>
+
+    <p id="username">Username : </p>
+    <p id="password">Password : </p>
+    <button onclick="logout()">Logout</button>
+  </div>
+  
+<div class="ubahsandi">
+                                <h4>Ubah Sandi</h4>
+
+  <label>Sandi Lama</label>
+<div class="password-wrapper">
+                                        <input type="password" id="sandiLama" placeholder="Masukkan Sandi Lama" />
+  
+  <span class="toggle-eye" onclick="togglePassword('sandiLama', this)">🔒</span>
+  
+<label>Sandi Baru</label>
+<div class="password-wrapper">
+                                        <input type="password" id="ubahsandi" placeholder="Masukkan Sandi baru" />
+                                        <span class="toggle-eye" onclick="togglePassword('ubahsandi', this)">🔒</span>
+</div>
+                                <label>Konfirmasi Sandi</label>
+<div class="password-wrapper">
+                                        <input type="password" id="konfirmasiSandi" placeholder="Masukkan Konfirmasi sandi" />
+                                        <span class="toggle-eye" onclick="togglePassword('konfirmasiSandi', this)">🔒</span>
+  </div>
+
+<button onclick="ubahsandi()">Ubah Sandi</button>
+                                <p id="msgSandi"></p>
+   </div>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="dashboard">
+      <img src="https://files.catbox.moe/uu97e9.png" alt="dash">
+      <span>Dashboard</span>
+    </a>
+    
+    <a href="transaksi.html" class="transaksi">
+      <img src="https://files.catbox.moe/m09xkz.png" alt="transaksi">
+      <span>Transaksi</span>
+    </a>
+    
+    <a href="filter.html" class="filter">
+      <img src="https://files.catbox.moe/kfd70x.png" alt="filter">
+      <span>Filter</span>
+    </a>
+    
+    <a href="filter.html" class="riwayat">
+      <img src="https://files.catbox.moe/3c8dak.png" alt="history">
+      <span>Riwayat</span>
+    </a>
+    
+    <a href="profil.html" class="profil">
+      <img src="https://files.catbox.moe/0hc0tq.png" alt="profile">
+      <span>Profil</span>
+    </a>
+  </nav>
+					
+					<label for="limitanggaran">Limit Anggaran</label>
+					    <input type="number" id="limitanggaran" placeholder="Masukkan Limit Anggaran"/>
+					    <button onclick="limitanggaran()">Simpan</button>
+					    
+					
+					<!-- Transaksi -->
+					    <label for="jenis">Pilih Jenis</label>
+					    <select name="jenis" id="jenis">
+					        <option value="">Pilih</option>
+					        <option value="Pemasukan">Pemasukan</option>
+					        <option value="pengeluaran">Pengeluaran</option>
+					    </select>
+					    
+					    <label for="tanggal">Tanggal</label>
+					    <input type="date" id="tanggal"/>
+					    
+					    <label for="metode">Metode Pembayaran</label>
+					    <input type="text" id="metode" placeholder="Masukkan Metode Pembayaran"/>
+					    
+					    <label for="kategori">Kategori</label>
+					    <input type="text" id="kategori" placeholder="Masukkan Kategori"/>
+					    
+					    <label for="desk">Deskripsi</label>
+					    <input type="text" id="desk" placeholder="Masukkan Deskripsi"/>
+					    
+					    <label for="nominal">Nominal</label>
+					    <input type="number" id="nominal" placeholder="Masukkan Nominal"/>
+					    
+					    <button onclick="simpan()">Simpan</button>
+					    <button onclick="reset()">Reset</button>
+					
+</body>
+					<script src="script.js"></script>
+      </html>
