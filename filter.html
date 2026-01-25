@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta name="view-port" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>FILTER - NAVIRA FINANCE</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+</head>
+
+<body>
+
+    <div class="filter">
+        <label for="filterjenis">Pilih Jenis</label>
+            <select name="filterjenis" id="filterjenis">
+                <option value="">Pilih</option>
+                <option value="Pemasukan">Pemasukan</option>
+                <option value="pengeluaran">Pengeluaran</option>
+            </select>
+
+            <label for="filterMetode">Metode</label>
+            <input type="text" id="filterMetode" placeholder="Masukkan Metode Pembayaran">
+
+           <label for="filterKategori">Kategori</label>
+           <input type="text" id="filterKategori" placeholder="Masukkan Kategori"/>
+
+           <label for="taggalawal">Tanggal Awal</label>
+           <input type="date" id="tanggalawal"/>
+
+           <label for="tanggalakhir">Tanggal Akhir</label>
+           <input type="date" id="tanggalakhir"/>
+
+           <button onclick="terapkan()">Terapkan</button>
+           <button onclick="resetfilter()">Reset</button>
+    </div>
+
+    <hr>
+    <h3>Riwayat Transaksi</h3>
+    <div id="riwayatTransaksi"></div>
+
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="dashboard">
+            <img src="https://files.catbox.moe/uu97e9.png" alt="dash">
+            <span>Dashboard</span>
+        </a>
+
+        <a href="transaksi.html" class="transaksi">
+            <img src="https://files.catbox.moe/m09xkz.png" alt="transaksi">
+            <span>Transaksi</span>
+        </a>
+
+        <a href="filter.html" class="filter">
+            <img src="https://files.catbox.moe/kfd70x.png" alt="filter">
+            <span>Filter</span>
+        </a>
+
+        <a href="filter.html" class="riwayat">
+            <img src="https://files.catbox.moe/3c8dak.png" alt="history">
+            <span>Riwayat</span>
+        </a>
+
+        <a href="profil.html" class="profil">
+            <img src="https://files.catbox.moe/0hc0tq.png" alt="profile">
+            <span>Profil</span>
+        </a>
+    </nav>
+
+</body>
+<script src="filter.js"></script>
+
+</html>
