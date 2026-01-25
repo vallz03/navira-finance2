@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRANSAKSI - NAVIRA FINANCE</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+
+<body>
+    <div class="limitanggaran">
+        <label for="limitanggaran">Limit Anggaran</label>
+        <input type="number" id="limitanggaran" placeholder="Masukkan Limit Anggaran" />
+        <button onclick="limitanggaran()">Simpan</button>
+        <div id="infoLimit" style="margin-top:10px; font-weight:bold;">
+            Limit Anggaran: -
+        </div>
+
+    </div>
+
+    <!-- Transaksi -->
+    <label for="jenis">Pilih Jenis</label>
+    <select name="jenis" id="jenis">
+        <option value="">Pilih</option>
+        <option value="Pemasukan">Pemasukan</option>
+        <option value="pengeluaran">Pengeluaran</option>
+    </select>
+
+    <label for="tanggal">Tanggal</label>
+    <input type="date" id="tanggal" />
+
+    <label for="metode">Metode Pembayaran</label>
+    <input type="text" id="metode" placeholder="Masukkan Metode Pembayaran" />
+
+    <label for="kategori">Kategori</label>
+    <input type="text" id="kategori" placeholder="Masukkan Kategori" />
+
+    <label for="desk">Deskripsi</label>
+    <input type="text" id="desk" placeholder="Masukkan Deskripsi" />
+
+    <label for="nominal">Nominal</label>
+    <input type="number" id="nominal" placeholder="Masukkan Nominal" />
+
+    <button onclick="simpan()" id="btnSimpan">Simpan</button>
+    <button onclick="reset()">Reset</button>
+
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="dashboard">
+            <img src="https://files.catbox.moe/uu97e9.png" alt="dash">
+            <span>Dashboard</span>
+        </a>
+
+        <a href="transaksi.html" class="transaksi">
+            <img src="https://files.catbox.moe/m09xkz.png" alt="transaksi">
+            <span>Transaksi</span>
+        </a>
+
+        <a href="filter.html" class="filter">
+            <img src="https://files.catbox.moe/kfd70x.png" alt="filter">
+            <span>Filter</span>
+        </a>
+
+        <a href="filter.html" class="riwayat">
+            <img src="https://files.catbox.moe/3c8dak.png" alt="history">
+            <span>Riwayat</span>
+        </a>
+
+        <a href="profil.html" class="profil">
+            <img src="https://files.catbox.moe/0hc0tq.png" alt="profile">
+            <span>Profil</span>
+        </a>
+    </nav>
+
+</body>
+<script src="transaksi1.js"></script>
+
+</html>
