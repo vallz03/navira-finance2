@@ -19,7 +19,7 @@ const userKey = localStorage.getItem("loginUser");
 
 if (!userKey) {
   alert("Silakan login terlebih dahulu");
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
 
 // ==========================
@@ -53,7 +53,7 @@ database.ref("users/" + userKey).once("value")
 // ==========================
 function logout() {
   localStorage.removeItem("loginUser");
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
 
 function togglePassword(inputId, el) {
