@@ -21,7 +21,7 @@ const currentUser = localStorage.getItem("loginUser");
 
 if (!currentUser) {
   alert("Silakan login terlebih dahulu");
-  window.location.href = "login.html"; // ubah jika perlu
+  window.location.href = "index.html"; // ubah jika perlu
 }
 
 let modeEdit = false;
