@@ -11,7 +11,9 @@ const firebaseConfig = {
   appId: "APP_ID"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.database();
 
 // =======================
@@ -24,27 +26,23 @@ if (!currentUser) {
 }
 
 // =======================
-// WAKTU REALTIME GLOBAL
-// =======================
-const NOW = new Date();
-const TAHUN_AKTIF = NOW.getFullYear().toString();
-const BULAN_AKTIF = `${TAHUN_AKTIF}-${String(NOW.getMonth() + 1).padStart(2, "0")}`;
-
-// =======================
 // ELEMENT
 // =======================
 const elSaldo   = document.getElementById("total-balance");
 const elIncome  = document.getElementById("total-income");
 const elExpense = document.getElementById("pengeluaran");
 
-const alertBox  = document.getElementById("peringatan");
-const alertMsg  = document.getElementById("alert-message");
-const alertList = document.getElementById("alert-recommend-list");
+const bulanFilter = document.getElementById("bulanFilter");
+const tahunFilter = document.getElementById("tahunFilter");
 
 const trxContainer = document.querySelector(".transaksiterbaru");
 
+// =======================
+// GLOBAL STATE
+// =======================
+let semuaTransaksi = [];
 let chartInstance = null;
-let limitAnggaran = 0;
+let chartMode = "bar"; // bar | candle
 
 // =======================
 // FORMAT RUPIAH
@@ -54,132 +52,164 @@ function rupiah(n) {
 }
 
 // =======================
-// LOAD LIMIT ANGGARAN
+// INIT TAHUN FILTER
 // =======================
-db.ref(`users/${currentUser}/limitAnggaran`)
-  .on("value", s => limitAnggaran = Number(s.val()) || 0);
+function initTahunFilter() {
+  const now = new Date().getFullYear();
+  tahunFilter.innerHTML = `<option value="">Tahun Terbaru</option>`;
 
-// =======================
-// LOAD TRANSAKSI REALTIME
-// =======================
-db.ref(`Transaksi/${currentUser}`).on("value", snapshot => {
-
-  let transaksi = [];
-
-  let totalPemasukan = 0;
-  let totalPengeluaran = 0;
-
-  let latestTimestamp = 0;
-
-  // ======================
-  // DATA CHART (ARRAY 12 BULAN)
-  // ======================
-  const chartIncome = Array(12).fill(0);
-  const chartExpense = Array(12).fill(0);
-
-  snapshot.forEach(child => {
-    const d = child.val();
-    if (!d || !d.tanggal) return;
-
-    const date = new Date(d.tanggal);
-    if (isNaN(date)) return;
-
-    const nominal = Number(d.nominal) || 0;
-    const jenis = (d.jenis || "").toLowerCase();
-
-    transaksi.push(d);
-
-    const time = date.getTime();
-    if (time > latestTimestamp) latestTimestamp = time;
-  });
-
-  // ======================
-  // BULAN & TAHUN AKTIF (DARI DATA TERBARU)
-  // ======================
-  const activeDate = latestTimestamp ? new Date(latestTimestamp) : new Date();
-  const activeMonth = activeDate.getMonth(); // 0–11
-  const activeYear  = activeDate.getFullYear();
-
-  // ======================
-  // HITUNG TOTAL & CHART
-  // ======================
-  transaksi.forEach(d => {
-    const date = new Date(d.tanggal);
-    if (isNaN(date)) return;
-
-    const bulan = date.getMonth();
-    const tahun = date.getFullYear();
-    const nominal = Number(d.nominal) || 0;
-    const jenis = (d.jenis || "").toLowerCase();
-
-    // DASHBOARD BULAN AKTIF
-    if (bulan === activeMonth && tahun === activeYear) {
-      if (jenis === "pemasukan") totalPemasukan += nominal;
-      if (jenis === "pengeluaran") totalPengeluaran += nominal;
-    }
-
-    // CHART TAHUN AKTIF
-    if (tahun === activeYear) {
-      if (jenis === "pemasukan") chartIncome[bulan] += nominal;
-      if (jenis === "pengeluaran") chartExpense[bulan] += nominal;
-    }
-  });
-
-  // ======================
-  // UPDATE UI
-  // ======================
-  elIncome.innerText  = rupiah(totalPemasukan);
-  elExpense.innerText = rupiah(totalPengeluaran);
-  elSaldo.innerText   = rupiah(totalPemasukan - totalPengeluaran);
-
-  tampilkanPeringatan(totalPengeluaran);
-  tampilkanChartTahunan(chartIncome, chartExpense, activeYear);
-  tampilkanTransaksiTerbaru(transaksi);
-});
-
-// =======================
-// PERINGATAN LIMIT
-// =======================
-function tampilkanPeringatan(total) {
-  alertList.innerHTML = "";
-  if (limitAnggaran > 0 && total >= limitAnggaran) {
-    alertBox.classList.remove("hidden");
-    alertMsg.innerText = "Pengeluaran melebihi limit anggaran!";
-    ["Kurangi pengeluaran", "Evaluasi kategori", "Disiplin pencatatan"]
-      .forEach(t => {
-        const li = document.createElement("li");
-        li.innerText = t;
-        alertList.appendChild(li);
-      });
-  } else {
-    alertBox.classList.add("hidden");
+  for (let i = now; i >= now - 5; i--) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = i;
+    tahunFilter.appendChild(opt);
   }
 }
 
 // =======================
-// CHART TAHUNAN
+// LOAD DATA REALTIME
 // =======================
-function tampilkanChartTahunan(income, expense, tahun) {
-  const canvas = document.getElementById("myChart");
-  if (!canvas) return;
+db.ref(`Transaksi/${currentUser}`).on("value", snap => {
+  semuaTransaksi = [];
+  snap.forEach(c => {
+    const d = c.val();
+    if (d && d.tanggal) semuaTransaksi.push(d);
+  });
+  renderDashboard();
+});
+
+// =======================
+// RENDER DASHBOARD (INTI)
+// =======================
+function renderDashboard() {
+  let totalIn = 0;
+  let totalOut = 0;
+
+  const chartIncome = Array(12).fill(0);
+  const chartExpense = Array(12).fill(0);
+
+  // tanggal terbaru
+  let latest = 0;
+  semuaTransaksi.forEach(t => {
+    const ts = new Date(t.tanggal).getTime();
+    if (!isNaN(ts) && ts > latest) latest = ts;
+  });
+
+  const refDate = latest ? new Date(latest) : new Date();
+
+  const activeMonth = bulanFilter.value !== ""
+    ? Number(bulanFilter.value) - 1
+    : refDate.getMonth();
+
+  const activeYear = tahunFilter.value !== ""
+    ? Number(tahunFilter.value)
+    : refDate.getFullYear();
+
+  // hitung transaksi
+  semuaTransaksi.forEach(t => {
+    const d = new Date(t.tanggal);
+    if (isNaN(d)) return;
+
+    const bulan = d.getMonth();
+    const tahun = d.getFullYear();
+    const nominal = Number(t.nominal) || 0;
+    const jenis = (t.jenis || "").toLowerCase();
+
+    if (tahun === activeYear) {
+      if (jenis === "pemasukan") chartIncome[bulan] += nominal;
+      if (jenis === "pengeluaran") chartExpense[bulan] += nominal;
+    }
+
+    if (bulan === activeMonth && tahun === activeYear) {
+      if (jenis === "pemasukan") totalIn += nominal;
+      if (jenis === "pengeluaran") totalOut += nominal;
+    }
+  });
+
+  // update ringkasan
+  elIncome.innerText = rupiah(totalIn);
+  elExpense.innerText = rupiah(totalOut);
+  elSaldo.innerText = rupiah(totalIn - totalOut);
+
+  // chart
+  if (chartMode === "bar") {
+    tampilkanChart(chartIncome, chartExpense, activeYear);
+  } else {
+    const candle = hitungCandleSaldoTahunan(semuaTransaksi, activeYear);
+    tampilkanCandlestick(candle, activeYear);
+  }
+
+  // transaksi terbaru
+  tampilkanTransaksiTerbaru(
+    semuaTransaksi.filter(t => {
+      const d = new Date(t.tanggal);
+      return d.getMonth() === activeMonth && d.getFullYear() === activeYear;
+    })
+  );
+}
+
+// =======================
+// CANDLE DATA
+// =======================
+function hitungCandleSaldoTahunan(data, tahun) {
+  const hasil = [];
+  let saldo = 0;
+
+  // urutkan semua transaksi
+  const sorted = data
+    .filter(t => new Date(t.tanggal).getFullYear() <= tahun)
+    .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
+  for (let bulan = 0; bulan < 12; bulan++) {
+    const transaksiBulan = sorted.filter(t => {
+      const d = new Date(t.tanggal);
+      return d.getFullYear() === tahun && d.getMonth() === bulan;
+    });
+
+    const open = saldo;
+
+    let high = open;
+    let low = open;
+
+    transaksiBulan.forEach(t => {
+      const jenis = (t.jenis || "").toLowerCase();
+      const nominal = Number(t.nominal) || 0;
+      saldo += jenis === "pemasukan" ? nominal : -nominal;
+      high = Math.max(high, saldo);
+      low = Math.min(low, saldo);
+    });
+
+    const close = saldo;
+
+    // ⚠️ PENTING: walau tidak ada transaksi, tetap push candle
+    hasil.push({
+      x: new Date(tahun, bulan, 1),
+      o: open,
+      h: high,
+      l: low,
+      c: close
+    });
+  }
+
+  return hasil;
+}
+
+// =======================
+// BAR CHART
+// =======================
+function tampilkanChart(income, expense, tahun) {
+  const ctx = document.getElementById("myChart");
+  if (!ctx) return;
 
   if (chartInstance) chartInstance.destroy();
 
-  chartInstance = new Chart(canvas, {
+  chartInstance = new Chart(ctx, {
     type: "bar",
     data: {
       labels: ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"],
       datasets: [
-        {
-          label: "Pemasukan",
-          data: income,
-          backgroundColor: "#4CAF50"
-        },
-        {
-          label: "Pengeluaran",
-          data: expense,
-          backgroundColor: "#F44336"
-        }
+        { label: "Pemasukan", data: income, backgroundColor: "#4CAF50" },
+        { label: "Pengeluaran", data: expense, backgroundColor: "#F44336" }
       ]
     },
     options: {
@@ -187,16 +217,46 @@ function tampilkanChartTahunan(income, expense, tahun) {
       plugins: {
         title: {
           display: true,
-          text: `Perbandingan Pemasukan & Pengeluaran Tahun ${tahun}`
+          text: `Ringkasan Keuangan ${tahun}`
         }
       },
       scales: {
         y: {
           beginAtZero: true,
-          ticks: {
-            callback: v => rupiah(v)
-          }
+          ticks: { callback: v => rupiah(v) }
         }
+      }
+    }
+  });
+}
+
+// =======================
+// CANDLE CHART
+// =======================
+function tampilkanCandlestick(data, tahun) {
+  const ctx = document.getElementById("myChart");
+  if (!ctx) return;
+
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: "candlestick",
+    data: {
+      datasets: [{
+        label: `Saldo Bulanan ${tahun}`,
+        data: data
+      }]
+    },
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: `Candlestick Saldo ${tahun}`
+        }
+      },
+      scales: {
+        x: { type: "time", time: { unit: "month" } },
+        y: { ticks: { callback: v => rupiah(v) } }
       }
     }
   });
@@ -205,7 +265,7 @@ function tampilkanChartTahunan(income, expense, tahun) {
 // =======================
 // TRANSAKSI TERBARU
 // =======================
-function tampilkanTransaksiTerbaru(data = []) {
+function tampilkanTransaksiTerbaru(data) {
   trxContainer.innerHTML = "<h1>Transaksi Terbaru</h1>";
 
   if (!data.length) {
@@ -213,17 +273,38 @@ function tampilkanTransaksiTerbaru(data = []) {
     return;
   }
 
-  data.slice(-5).reverse().forEach(trx => {
-    const isIn = (trx.jenis || "").toLowerCase() === "pemasukan";
-    const div = document.createElement("div");
-    div.className = "trx-item";
-    div.innerHTML = `
-      <strong>${trx.deskripsi || "-"}</strong><br>
-      <small>${trx.tanggal || "-"} • ${trx.metode || "-"}</small><br>
-      <span style="color:${isIn ? "green" : "red"}">
-        ${isIn ? "+" : "-"} ${rupiah(trx.nominal)}
-      </span>
-    `;
-    trxContainer.appendChild(div);
-  });
+  data
+    .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
+    .slice(0, 5)
+    .forEach(t => {
+      const div = document.createElement("div");
+      div.className = "trx-item";
+      div.innerHTML = `
+        <b>${t.deskripsi || "-"}</b><br>
+        <small>${t.tanggal} • ${t.metode || "-"}</small><br>
+        <span style="color:${t.jenis === "pemasukan" ? "green" : "red"}">
+          ${t.jenis === "pemasukan" ? "+" : "-"} ${rupiah(t.nominal)}
+        </span>
+      `;
+      trxContainer.appendChild(div);
+    });
 }
+
+// =======================
+// INIT
+// =======================
+document.addEventListener("DOMContentLoaded", () => {
+  initTahunFilter();
+  bulanFilter.addEventListener("change", renderDashboard);
+  tahunFilter.addEventListener("change", renderDashboard);
+});
+
+document.getElementById("btnBar")?.addEventListener("click", () => {
+  chartMode = "bar";
+  renderDashboard();
+});
+
+document.getElementById("btnCandle")?.addEventListener("click", () => {
+  chartMode = "candle";
+  renderDashboard();
+});
