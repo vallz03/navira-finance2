@@ -144,14 +144,23 @@ function renderItem(container, d) {
   div.className = "transaksi-item";
 
   div.innerHTML = `
-    <div class="transaksi-icon">${isMasuk ? "👤" : "🏪"}</div>
+    <div class="transaksi-icon">${isMasuk ? "👤" : "💳"}</div>
 
     <div class="transaksi-info">
       <div class="transaksi-judul">${isMasuk ? "Transfer" : "Pembayaran"}</div>
+
+      <!-- Hanya Tanggal (tanpa jam) -->
       <div class="transaksi-tanggal">
-        ${formatTanggal(tgl)}, ${formatJam(tgl)}
+        ${formatTanggal(tgl)}
       </div>
+
+      <!-- Kategori + Metode -->
       <small>${d.kategori || "-"} • ${d.metode || "-"}</small>
+
+      <!-- Tambahkan Deskripsi -->
+      <div class="transaksi-deskripsi">
+        ${d.deskripsi ? d.deskripsi : "-"}
+      </div>
     </div>
 
     <div class="transaksi-nominal ${isMasuk ? "masuk" : "keluar"}">
@@ -159,8 +168,8 @@ function renderItem(container, d) {
     </div>
 
     <div class="aksi">
-      <button onclick="editTransaksi('${d.id}')">✏️</button>
-      <button onclick="hapusTransaksi('${d.id}')">🗑️</button>
+      <button onclick="editTransaksi('${d.id}')">✎ EDIT</button>
+      <button onclick="hapusTransaksi('${d.id}')">⌫ DELETE</button>
     </div>
   `;
 
@@ -171,26 +180,7 @@ function renderItem(container, d) {
 // EDIT TRANSAKSI
 // =======================
 function editTransaksi(id) {
-  db.ref(`Transaksi/${currentUser}/${id}`).once("value").then(snap => {
-    const d = snap.val();
-    if (!d) return;
-
-    const nominal = prompt("Edit Nominal:", d.nominal);
-    if (nominal === null) return;
-
-    const kategori = prompt("Edit Kategori:", d.kategori || "");
-    const metode = prompt("Edit Metode:", d.metode || "");
-    const deskripsi = prompt("Edit Deskripsi:", d.deskripsi || "");
-
-    db.ref(`Transaksi/${currentUser}/${id}`).update({
-      nominal: Number(nominal),
-      kategori,
-      metode,
-      deskripsi
-    }).then(() => {
-      loadRiwayat();
-    });
-  });
+  window.location.href = `transaksi.html?edit=${id}`;
 }
 
 // =======================
