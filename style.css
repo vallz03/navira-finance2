@@ -1,165 +1,444 @@
-/* --- ROOT VARIABLES --- */
+/* Import Font Profesional dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+/* NAVIRA FINANCE - MASTER STYLESHEET 
+   Style: Ultra-Modern, Premium Glassmorphism, Professional
+   Version: 2.0 (Refined)
+*/
+
+/* --- 1. SETTING DASAR & VARIABEL --- */
 :root {
-    --primary-color: #2563eb; /* Biru Profesional */
-    --primary-hover: #1d4ed8;
-    --bg-dark: #0f172a; /* Slate Dark */
-    --text-light: #f8fafc;
-    --text-dim: #94a3b8;
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --primary: #0f172a;       /* Midnight Navy */
+    --secondary: #b8926a;     /* Champagne Gold */
+    --accent: #3b82f6;        /* Professional Blue */
+    --bg-surface: #ffffff;
+    --bg-body: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+    --radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Palette Warna Premium */
+    --primary: #00d2ff;        /* Electric Blue */
+    --primary-dark: #0062ff;   /* Deep Blue Luxe */
+    --accent: #ffd700;         /* Gold Premium */
+    --bg-dark: #0f172a;        /* Slate Navy Deep */
+    --card-bg: rgba(30, 41, 59, 0.6);
+    --input-bg: rgba(15, 23, 42, 0.6);
+    
+    /* Status Warna */
+    --success: #10b981;
+    --danger: #ef4444;
+    
+    /* Teks */
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    /* Efek & Animasi */
+    --glass: blur(16px);
+    --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-/* --- RESET & LAYOUT --- */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-    font-family: var(--font-main);
+margin: 0;
+padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-body);
     background-color: var(--bg-dark);
-    /* Background dekoratif premium */
     background-image: 
-        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(30, 64, 175, 0.15) 0px, transparent 50%);
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+        radial-gradient(circle at top right, #1e293b, #0f172a),
+        radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.03) 0%, transparent 40%);
+color: var(--text-main);
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh;
+padding-bottom: 100px; /* Ruang untuk bottom nav */
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* --- Container & Layout --- */
+.container, .ubahsandi, .limitanggaran {
+    max-width: 450px;
+    margin: 0 auto 24px auto;
+    background: var(--bg-surface);
+    padding: 32px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+}
+
+h4 {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 20px;
+    border-left: 4px solid var(--secondary);
+    padding-left: 12px;
+}
+
+/* --- Form Elements --- */
+/* --- 2. KOMPONEN INPUT & FORM --- */
+label {
+display: block;
+    font-size: 13px;
+    font-size: 0.8rem;
+font-weight: 600;
+color: var(--text-muted);
+    margin-bottom: 8px;
+    margin: 15px 0 8px 5px;
+text-transform: uppercase;
+    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+}
+
+input, select {
+input, select, textarea {
+width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--input-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    outline: none;
+transition: var(--transition);
+    background-color: #fcfcfc;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--secondary);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(184, 146, 106, 0.1);
+input:focus {
+    border-color: var(--primary);
+    background: rgba(15, 23, 42, 0.9);
+    box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.1);
+}
+
+/* Password Box Wrapper */
+.password-box, .password-wrapper {
+    position: relative;
+/* --- 3. TOMBOL GLOBAL & PREMIUM (UPDATED) --- */
+button {
+width: 100%;
+    padding: 15px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    
+    /* Menambahkan jarak antar button */
+    margin-bottom: 20px; 
+    display: block; /* Memastikan margin bekerja dengan baik */
+}
+
+.password-box span, .toggle-eye {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.6;
+/* Menghilangkan margin pada button terakhir di dalam sebuah container agar tidak ada ruang kosong berlebih */
+button:last-child {
+    margin-bottom: 0;
+}
+
+/* --- Buttons --- */
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 12px;
+/* Jika button berada di dalam class ubahsandi, pastikan margin atas juga konsisten */
+.ubahsandi {
+    margin-top: 20px;
+}
+
+.ubahsandi button {
+    margin-top: 0; /* Reset margin top karena sudah dihandle container atau margin-bottom button sebelumnya */
+    margin-bottom: 20px;
+}
+
+/* --- 4. PROFILE CARD PREMIUM --- */
+.profilBox {
+    background: var(--card-bg);
+    margin: 20px;
+    padding: 35px;
+    border-radius: 30px;
+    backdrop-filter: var(--glass);
+    -webkit-backdrop-filter: var(--glass);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-premium);
+    position: relative;
     overflow: hidden;
 }
 
-/* --- 10 LOGIN CARD --- */
-.login {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    width: 100%;
-    max-width: 420px;
-    padding: 50px 40px;
-    border-radius: 24px;
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    animation: fadeIn 0.8s ease-out;
+.avatar-circle {
+    width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 50%;
+display: flex;
+    justify-content: center;
+align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 15px;
+    box-shadow: 0 10px 25px rgba(0, 110, 255, 0.4);
+    border: 3px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Primary Button Style (Login, Simpan, Ubah Sandi) */
+button[onclick*="login"], button[onclick*="simpan"], button[onclick*="ubahsandi"], button[onclick*="limitanggaran"] {
+    background: var(--primary);
+    color: white;
+.info-group p {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+button[onclick*="login"]:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+.info-group p span {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Secondary Button Style (Daftar, Reset) */
+button[onclick*="daftar"], button[onclick*="reset"] {
+    background: transparent;
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+/* Badge Premium */
+.badge-premium {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--accent) !important;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+button[onclick*="daftar"]:hover {
+    background: rgba(15, 23, 42, 0.05);
+/* --- 5. DASHBOARD CARDS --- */
+.card-big {
+    background: linear-gradient(135deg, #1e40af, #1e3a8a);
+    margin: 20px;
+    padding: 30px;
+    border-radius: 28px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Danger Button Style (Logout) */
+button[onclick*="logout"] {
+    background: #fee2e2;
+    color: #dc2626;
+.card-big .value { 
+    font-size: 2.2rem; 
+    font-weight: 800; 
+    letter-spacing: -1px;
+}
+
+button[onclick*="logout"]:hover {
+    background: #fecaca;
+.card {
+    background: var(--card-bg);
+    margin: 12px 20px;
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: var(--glass);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* --- Profil Data --- */
+p#username, p#password {
+    background: #f1f5f9;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: var(--text-main);
+/* --- 6. LIST TRANSAKSI --- */
+.transaction-item {
+    background: var(--card-bg);
+    padding: 18px;
+    border-radius: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: var(--transition);
+}
+
+.transaction-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.02);
+}
+
+/* --- Bottom Navigation --- */
+/* --- 7. BOTTOM NAVIGATION --- */
+.bottom-nav {
+position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    bottom: 0; left: 0; right: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+display: flex;
+justify-content: space-around;
+    padding: 12px 0 24px 0;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+    z-index: 1000;
+    padding: 12px 10px 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 9999;
+}
+
+.bottom-nav a {
+text-decoration: none;
+display: flex;
+flex-direction: column;
+align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+    gap: 5px;
+    width: 20%;
+transition: var(--transition);
+}
+
+.bottom-nav a img {
+    width: 24px;
+    height: 24px;
+    filter: grayscale(1);
+    opacity: 0.7;
+.bottom-nav img {
+    width: 24px; height: 24px;
+    opacity: 0.4;
+    filter: grayscale(1) brightness(1.5);
+transition: var(--transition);
+}
+
+.bottom-nav a span {
+    font-size: 11px;
+    font-weight: 500;
+.bottom-nav span {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.bottom-nav a:hover, .bottom-nav a:active {
+    color: var(--secondary);
+.bottom-nav a.active img, .bottom-nav a:hover img {
+    opacity: 1;
+    filter: grayscale(0) drop-shadow(0 0 8px var(--primary));
+    transform: translateY(-5px);
+}
+
+.bottom-nav a:hover img {
+    filter: none;
+    opacity: 1;
+    transform: translateY(-2px);
+.bottom-nav a.active span {
+    color: var(--primary);
+}
+
+/* --- 8. LOGOUT & DANGER ZONE --- */
+.btn-logout {
+    margin-top: 20px;
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--danger);
+}
+
+.btn-logout:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* --- 9. ANIMASI --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-h1 {
-    color: var(--text-light);
-    font-size: 2rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 35px;
-    letter-spacing: -0.5px;
+.card, .profilBox, .login, .transaction-item, .card-big {
+    animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-/* --- FORM ELEMENTS --- */
-label {
-    color: var(--text-dim);
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 8px;
-    margin-left: 4px;
-    display: block;
+/* --- 10. LOGIN CONTAINER --- */
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-input {
-    width: 100%;
-    padding: 14px 16px;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    color: white;
-    font-size: 1rem;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
-}
-
-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
-}
-
-/* Password Box Container */
-.password-box {
-    position: relative;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.password-box input {
-    margin-bottom: 0;
-    padding-right: 50px;
-}
-
-.password-box span {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    filter: grayscale(1);
-    transition: filter 0.3s;
-}
-
-.password-box span:hover {
-    filter: grayscale(0);
-}
-
-/* --- BUTTONS --- */
-button {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s active;
-    border: none;
-}
-
-/* Tombol Login (Primary) */
-button:nth-of-type(1) {
-    background: var(--primary-color);
-    color: white;
-    margin-top: 20px;
-    margin-bottom: 12px;
-}
-
-button:nth-of-type(1):hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
-}
-
-/* Tombol Daftar (Secondary/Outline) */
-button:nth-of-type(2) {
-    background: transparent;
-    color: var(--text-light);
-    border: 1px solid var(--glass-border);
-}
-
-button:nth-of-type(2):hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: white;
-}
-
-button:active {
-    transform: translateY(0);
-}
-
-/* --- PLACEHOLDER --- */
-::placeholder {
-    color: #64748b;
+/* Mobile Friendly Adjustments */
+@media (max-width: 480px) {
+    body { padding: 15px; }
+    .container { padding: 24px; }
+.login {
+    background: var(--card-bg);
+    width: 90%;
+    max-width: 400px;
+    padding: 45px;
+    border-radius: 35px;
+    backdrop-filter: var(--glass);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-premium);
 }
