@@ -47,7 +47,7 @@ function login() {
       localStorage.setItem("loginUser", username);
 
       alert("Login berhasil!");
-      window.location.href = "profil.html";
+      window.location.href = "dashboard.html";
     })
     .catch(error => {
       console.error(error);
