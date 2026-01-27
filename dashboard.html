@@ -1,108 +1,108 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-    <meta name="view-port" content="width=device-width, initial-scale=1.0" />
-    <meta charset="UTF-8" />
-    <title>DASHBOARD - NAVIRA FINANCE</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <title>DASHBOARD - NAVIRA FINANCE</title>
+  <link rel="stylesheet" href="style.css">
 
+  <!-- Chart & Candlestick -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 
 <body>
 
-    <div class="filter-bulan">
-        <select id="bulanFilter">
-            <option value="">Bulan Terbaru</option>
-            <option value="01">Januari</option>
-            <option value="02">Februari</option>
-            <option value="03">Maret</option>
-            <option value="04">April</option>
-            <option value="05">Mei</option>
-            <option value="06">Juni</option>
-            <option value="07">Juli</option>
-            <option value="08">Agustus</option>
-            <option value="09">September</option>
-            <option value="10">Oktober</option>
-            <option value="11">November</option>
-            <option value="12">Desember</option>
-        </select>
+  <!-- FILTER -->
+  <div class="filter-bulan">
+    <select id="bulanFilter">
+      <option value="">Bulan Terbaru</option>
+      <option value="01">Januari</option>
+      <option value="02">Februari</option>
+      <option value="03">Maret</option>
+      <option value="04">April</option>
+      <option value="05">Mei</option>
+      <option value="06">Juni</option>
+      <option value="07">Juli</option>
+      <option value="08">Agustus</option>
+      <option value="09">September</option>
+      <option value="10">Oktober</option>
+      <option value="11">November</option>
+      <option value="12">Desember</option>
+    </select>
 
-        <select id="tahunFilter">
-            <option value="">Tahun Terbaru</option>
-        </select>
-    </div>
+    <select id="tahunFilter">
+      <option value="">Tahun Terbaru</option>
+    </select>
+  </div>
 
-    <div class="card-big">
-        <div class="title">Total saldo</div>
-        <div class="value" id="total-balance">Rp 0</div>
-    </div>
-    <div class="card">
-        <div class="title">Total Pemasukan</div>
-        <div class="value" id="total-income">Rp 0</div>
-    </div>
-    <div class="card">
-        <div class="title">Total Pengeluaran</div>
-        <div class="value" id="pengeluaran">Rp 0</div>
-    </div>
-    <div id="peringatan" class="alert-card hidden">
-        <div class="alert-header">
-            <span class="alert-icon">⚠️</span>
-            <div class="alert-title">
-                <h4>Peringatan Keuangan</h4>
-                <small id="alert-subtitle">Perlu perhatian</small>
-            </div>
-        </div>
+  <!-- SUMMARY -->
+  <div class="card-big">
+    <div class="title">Total Saldo</div>
+    <div class="value" id="total-balance">Rp 0</div>
+  </div>
 
-        <div class="alert-body" id="alert-message"></div>
+  <div class="card">
+    <div class="title">Total Pemasukan</div>
+    <div class="value" id="total-income">Rp 0</div>
+  </div>
 
-        <div class="alert-recommendation">
-            <h5>💡 Rekomendasi Penghematan</h5>
-            <ul id="alert-recommend-list"></ul>
-        </div>
-    </div>
+  <div class="card">
+    <div class="title">Total Pengeluaran</div>
+    <div class="value" id="pengeluaran">Rp 0</div>
+  </div>
 
-    <div style="width: 60%; margin: auto;">
-        <canvas id="myChart"></canvas>
-    </div>
+  <!-- CHART -->
+  <div style="width: 90%; max-width: 900px; margin: 20px auto;">
+    <canvas id="myChart"></canvas>
+  </div>
 
-    <div class="transaksiterbaru">
-        <h1>Transaksi Terbaru</h1>
+  <div style="text-align:center; margin-bottom:15px">
+    <button id="btnBar">📊 Bar Chart</button>
+    <button id="btnCandle">🕯️ Candlestick</button>
+  </div>
 
-    </div>
+  <!-- TRANSAKSI TERBARU -->
+  <div class="transaksiterbaru">
+    <h1>Transaksi Terbaru</h1>
+  </div>
 
-    <nav class="bottom-nav">
-        <a href="dashboard.html" class="dashboard">
-            <img src="https://files.catbox.moe/uu97e9.png" alt="dash">
-            <span>Dashboard</span>
-        </a>
+  <!-- NAV -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="dashboard">
+      <img src="https://files.catbox.moe/uu97e9.png">
+      <span>Dashboard</span>
+    </a>
 
-        <a href="transaksi.html" class="transaksi">
-            <img src="https://files.catbox.moe/m09xkz.png" alt="transaksi">
-            <span>Transaksi</span>
-        </a>
+    <a href="transaksi.html" class="transaksi">
+      <img src="https://files.catbox.moe/m09xkz.png">
+      <span>Transaksi</span>
+    </a>
 
-        <a href="filter.html" class="filter">
-            <img src="https://files.catbox.moe/kfd70x.png" alt="filter">
-            <span>Filter</span>
-        </a>
+    <a href="filter.html" class="filter">
+      <img src="https://files.catbox.moe/kfd70x.png">
+      <span>Filter</span>
+    </a>
 
-        <a href="filter.html" class="riwayat">
-            <img src="https://files.catbox.moe/3c8dak.png" alt="history">
-            <span>Riwayat</span>
-        </a>
+    <a href="filter.html" class="riwayat">
+      <img src="https://files.catbox.moe/3c8dak.png">
+      <span>Riwayat</span>
+    </a>
 
-        <a href="profil.html" class="profil">
-            <img src="https://files.catbox.moe/0hc0tq.png" alt="profile">
-            <span>Profil</span>
-        </a>
-    </nav>
+    <a href="profil.html" class="profil">
+      <img src="https://files.catbox.moe/0hc0tq.png">
+      <span>Profil</span>
+    </a>
+  </nav>
 
+  <!-- JS DASHBOARD -->
+  <script src="dashboard1.js"></script>
 </body>
-<script src="dashboard1.js"></script>
-
 </html>
