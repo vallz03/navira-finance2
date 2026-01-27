@@ -59,17 +59,20 @@
 
   <!-- REKAP -->
   <section class="rekap-section">
-    <h3>Rekap Bulanan</h3>
+  <div class="rekap-bulan">
+    <div class="rekap-judul" id="judulBulan">-</div>
 
-    <div class="saldo-bulanan">
-      <p>Pemasukan: <b id="saldoMasuk">Rp 0</b></p>
-      <p>Pengeluaran: <b id="saldoKeluar">Rp 0</b></p>
-      <p>Saldo Bersih: <b id="saldoBersih">Rp 0</b></p>
+    <div class="rekap-row">
+      <span>Saldo keluar</span>
+      <span id="saldoKeluar">Rp 0</span>
     </div>
 
-    <div id="rekapBulanan"></div>
-
-  </section>
+    <div class="rekap-row">
+      <span>Saldo masuk</span>
+      <span id="saldoMasuk">Rp 0</span>
+    </div>
+  </div>
+</section>
 
   <hr>
 
