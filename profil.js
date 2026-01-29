@@ -60,10 +60,10 @@ function togglePassword(inputId, el) {
   const input = document.getElementById(inputId);
   if (input.type === "password") {
     input.type = "text";
-    el.textContent = "🔓";
+    el.textContent = "👀";
   } else {
     input.type = "password";
-    el.textContent = "🔒";
+    el.textContent = "🚫";
   }
 }
 
@@ -74,27 +74,20 @@ function ubahsandi() {
   const sandiLama = document.getElementById("sandiLama").value.trim();
   const sandiBaru = document.getElementById("ubahsandi").value.trim();
   const konfirmasi = document.getElementById("konfirmasiSandi").value.trim();
-  const msg = document.getElementById("msgSandi");
-
-  msg.textContent = "";
-  msg.style.color = "";
 
   // VALIDASI FIELD
   if (!sandiLama || !sandiBaru || !konfirmasi) {
-    msg.textContent = "Semua field wajib diisi";
-    msg.style.color = "#dc2626";
+    alert("Semua data wajib diisi");
     return;
   }
 
   if (sandiBaru.length < 6) {
-    msg.textContent = "Sandi baru minimal 6 karakter";
-    msg.style.color = "#dc2626";
+    alert("Sandi baru minimal 6 karakter");
     return;
   }
 
   if (sandiBaru !== konfirmasi) {
-    msg.textContent = "Konfirmasi sandi tidak cocok";
-    msg.style.color = "#dc2626";
+    alert("Konfirmasi sandi tidak cocok");
     return;
   }
 
@@ -118,19 +111,19 @@ function ubahsandi() {
       });
     })
     .then(() => {
-      msg.textContent = "Sandi berhasil diperbarui";
-      msg.style.color = "#16a34a";
+      alert("Sandi berhasil diperbarui");
 
+      // RESET FORM
       document.getElementById("sandiLama").value = "";
       document.getElementById("ubahsandi").value = "";
       document.getElementById("konfirmasiSandi").value = "";
     })
     .catch(error => {
-      msg.textContent = error.message || "Gagal memperbarui sandi";
-      msg.style.color = "#dc2626";
+      alert(error.message || "Gagal memperbarui sandi");
       console.error(error);
     });
 }
+
 
 function maskPassword(password, showStart = 1, showEnd = 1) {
   if (!password) return "";
