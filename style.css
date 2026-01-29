@@ -1,288 +1,256 @@
-/* NAVIRA FINANCE - MASTER STYLESHEET 
-    Style: Ultra-Modern, Premium Glassmorphism, Professional
-    Version: 3.0 (Unified & Optimized)
-*/
+/* ======================================================
+   VALLZ STORE — PREMIUM UI SYSTEM
+   Clean • White • Blue-Green • Professional
+====================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* === GOOGLE FONTS === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap');
 
+/* === ROOT VARIABLES === */
 :root {
-    /* --- Premium Color Palette --- */
-    --primary: #6366f1;           /* Indigo Electric */
-    --primary-dark: #4f46e5;      /* Deep Indigo */
-    --accent: #ffd700;            /* Gold Premium */
-    --bg-dark: #0f172a;           /* Deep Slate Navy */
-    --card-bg: rgba(30, 41, 59, 0.6);
-    --input-bg: rgba(15, 23, 42, 0.6);
-    
-    /* --- Status Colors --- */
+    --primary: #0b3c49;           /* Deep Teal Blue */
+    --primary-soft: #0e5e6f;
+    --accent: #14f1d9;            /* Cyan Premium */
+    --accent-glow: rgba(20,241,217,.25);
+
+    --bg: #ffffff;
+    --card: #ffffff;
+
+    --text-main: #0f172a;
+    --text-muted: #6b7280;
+
     --success: #10b981;
     --danger: #ef4444;
-    
-    /* --- Typography --- */
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    
-    /* --- Effects & Glassmorphism --- */
-    --glass: blur(16px);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+    --radius-lg: 24px;
+    --radius-md: 16px;
+
+    --shadow:
+        0 20px 40px -10px rgba(11,60,73,.15),
+        0 8px 20px -6px rgba(0,0,0,.05);
+
+    --transition: all .3s cubic-bezier(.4,0,.2,1);
 }
 
-/* --- 1. RESET & BASE LAYOUT --- */
+/* === RESET === */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    -webkit-tap-highlight-color: transparent;
 }
 
+/* === BODY === */
 body {
-    background-color: var(--bg-dark);
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(30, 64, 175, 0.15) 0px, transparent 50%);
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
     color: var(--text-main);
     min-height: 100vh;
-    line-height: 1.6;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
 }
 
-/* --- 2. TYPOGRAPHY --- */
-h1, h2, h3 {
-    color: var(--text-light);
-    font-weight: 700;
-    letter-spacing: -0.5px;
+/* Mobile App Layout */
+body:not(:has(.login-page)) {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px 20px 120px;
+}
+
+/* === TYPOGRAPHY === */
+h1, h2, h3, h4 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--primary);
+}
+
+h4 {
+    font-size: 1.1rem;
     margin-bottom: 20px;
+    padding-left: 14px;
+    border-left: 5px solid var(--accent);
 }
 
-/* --- 3. FORMS & INPUTS --- */
+/* === CARD SYSTEM === */
+.login-page,
+.profilBox,
+.ubahsandi,
+.card,
+.filter-section,
+.rekap-bulan {
+    background: var(--card);
+    padding: 25px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border: 1px solid rgba(20,241,217,.12);
+}
+
+/* === PROFILE TEXT === */
+.profilBox p {
+    margin-bottom: 10px;
+    font-size: .95rem;
+}
+
+/* === FORM === */
 label {
     display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin: 15px 0 8px 5px;
+    font-size: .7rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: var(--text-muted);
+    margin: 15px 0 6px;
 }
 
-input, select, textarea {
+input,
+select {
     width: 100%;
-    background: var(--input-bg);
-    border: 1px solid var(--glass-border);
-    color: white;
-    padding: 14px 18px;
-    border-radius: 14px;
-    font-size: 0.95rem;
-    outline: none;
+    padding: 15px 18px;
+    border-radius: var(--radius-md);
+    border: 2px solid #e5e7eb;
+    background: #ffffff;
+    font-size: .95rem;
     transition: var(--transition);
+    margin-bottom: 10px;
 }
 
-input:focus {
-    border-color: var(--primary);
-    background: rgba(15, 23, 42, 0.9);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+input:focus,
+select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-glow);
+    outline: none;
 }
 
-.password-box {
+/* === PASSWORD FIELD === */
+.password-wrapper {
     position: relative;
-    width: 100%;
 }
 
-.password-box span {
+.toggle-eye {
     position: absolute;
-    right: 15px;
+    right: 18px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    opacity: 0.6;
-    transition: 0.3s;
+    opacity: .5;
+    transition: var(--transition);
 }
 
-/* --- 4. PREMIUM BUTTONS --- */
+.toggle-eye:hover {
+    opacity: 1;
+}
+
+/* === BUTTON SYSTEM === */
 button {
     width: 100%;
-    padding: 15px;
-    border-radius: 14px;
-    font-size: 0.95rem;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border: none;
+    font-family: 'Poppins', sans-serif;
     font-weight: 700;
+    font-size: .9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     cursor: pointer;
     transition: var(--transition);
-    border: none;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+/* JARAK ANTAR BUTTON 15px */
+button + button {
+    margin-top: 15px;
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 25px rgba(99, 102, 241, 0.4);
+/* JARAK BUTTON DARI FORM */
+button:first-of-type {
+    margin-top: 25px;
 }
 
-.btn-outline {
-    background: transparent;
-    color: var(--text-main);
-    border: 1px solid var(--glass-border);
+/* Primary Button */
+button[onclick*="login"],
+button[onclick*="simpan"],
+button[onclick*="ubah"],
+#btnSimpan {
+    background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+    color: #e6fffa;
+    box-shadow: 0 12px 26px rgba(11,60,73,.3);
 }
 
-.btn-outline:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: white;
+/* Accent Button */
+.ubahsandi button {
+    background: linear-gradient(135deg, var(--accent), #2dd4bf);
+    color: #042f2e;
 }
 
-.btn-logout {
-    background: rgba(239, 68, 68, 0.1);
+/* Logout / Danger */
+.profilBox button {
+    background: #fee2e2;
     color: var(--danger);
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    text-transform: none;
 }
 
-.btn-logout:hover {
-    background: var(--danger);
-    color: white;
+/* Hover */
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
 }
 
-/* --- 5. CONTAINERS & CARDS --- */
-.login-container {
-    margin: auto;
-    width: 100%;
-    max-width: 420px;
-    padding: 40px;
-    background: var(--card-bg);
-    backdrop-filter: var(--glass);
-    -webkit-backdrop-filter: var(--glass);
-    border-radius: 28px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-premium);
-    animation: fadeIn 0.8s ease-out;
+/* === MESSAGE === */
+#msgSandi {
+    margin-top: 15px;
+    font-size: .85rem;
+    color: var(--text-muted);
 }
 
-.profilBox {
-    background: var(--card-bg);
-    margin: 20px;
-    padding: 30px;
-    border-radius: 24px;
-    backdrop-filter: var(--glass);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-premium);
-}
-
-.card-big {
-    background: linear-gradient(135deg, #1e40af, #1e3a8a);
-    margin: 20px;
-    padding: 30px;
-    border-radius: 24px;
-    text-align: center;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-}
-
-/* --- 6. DASHBOARD ELEMENTS --- */
-.avatar-circle {
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: white;
-    margin-bottom: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-}
-
-.transaction-item {
-    background: rgba(255, 255, 255, 0.03);
-    padding: 16px;
-    border-radius: 16px;
-    margin-bottom: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: var(--transition);
-}
-
-.transaction-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateX(5px);
-}
-
-/* --- 7. BOTTOM NAVIGATION --- */
+/* === BOTTOM NAVIGATION === */
 .bottom-nav {
     position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 90px;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(18px);
     display: flex;
     justify-content: space-around;
-    padding: 15px 10px 30px;
-    border-top: 1px solid var(--glass-border);
+    align-items: center;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(20,241,217,.2);
     z-index: 1000;
 }
 
 .bottom-nav a {
-    text-decoration: none;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    width: 20%;
+    text-decoration: none;
+    font-size: .7rem;
+    font-weight: 600;
+    color: var(--text-muted);
     transition: var(--transition);
 }
 
 .bottom-nav img {
-    width: 24px; height: 24px;
-    opacity: 0.5;
-    filter: grayscale(1);
+    width: 24px;
+    margin-bottom: 6px;
+    opacity: .45;
+    transition: var(--transition);
 }
 
-.bottom-nav span {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--text-muted);
-}
-
-.bottom-nav a.active img {
-    opacity: 1;
-    filter: grayscale(0) drop-shadow(0 0 8px var(--primary));
-}
-
-.bottom-nav a.active span {
+.bottom-nav a:hover,
+.bottom-nav a.active {
     color: var(--primary);
 }
 
-/* --- 8. ANIMATIONS --- */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+.bottom-nav a:hover img {
+    opacity: 1;
+    transform: translateY(-3px);
 }
 
-.animate-fade {
-    animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
+/* === RESPONSIVE === */
+@media (max-width: 480px) {
+    body {
+        padding: 15px 15px 120px;
+    }
 
-/* --- 9. UTILITIES --- */
-.badge-premium {
-    background: rgba(255, 215, 0, 0.1);
-    color: var(--accent);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    .profilBox,
+    .ubahsandi {
+        padding: 20px;
+    }
 }
-
-.text-success { color: var(--success); }
-.text-danger { color: var(--danger); }
