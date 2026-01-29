@@ -1,77 +1,83 @@
 <!DOCTYPE html>
 <html lang="id">
-    <head>
-        <meta name="view-port" content="width=device-width, initial-scale=1.0"/>
-        <meta charset="UTF-8"/>
-        <title>PROFIL - NAVIRA FINANCE</title>
-        <link rel="stylesheet" href="style.css">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PROFIL - NAVIRA FINANCE</title>
 
-        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-    </head>
+</head>
 
 <body>
-<!-- Profil -->
-<div class="profilBox">
-    <h4>Profil User</h4>
 
-    <p id="profilusername">Username : </p>
-    <p id="profilpassword">Password : </p>
-    <button onclick="logout()">Logout</button>
-</div>
+    <!-- PROFIL USER -->
+    <div class="profilBox">
+        <h4>Profil User</h4>
+        <p id="profilusername">Username :</p>
+        <p id="profilpassword">Password :</p>
+        <button onclick="logout()">Logout</button>
+    </div>
 
-<div class="ubahsandi">
-    <h4>Ubah Sandi</h4>
+    <!-- UBAH SANDI -->
+    <div class="ubahsandi">
+        <h4>Ubah Sandi</h4>
 
-    <label>Sandi Lama</label>
-    <div class="password-wrapper">
-        <input type="password" id="sandiLama" placeholder="Masukkan Sandi Lama" />
-
-        <span class="toggle-eye" onclick="togglePassword('sandiLama', this)">🔒</span>
+        <label>Sandi Lama</label>
+        <div class="password-wrapper">
+            <input type="password" id="sandiLama" placeholder="Masukkan Sandi Lama" />
+            <span class="toggle-eye" onclick="togglePassword('sandiLama', this)">🚫</span>
+        </div>
 
         <label>Sandi Baru</label>
         <div class="password-wrapper">
-            <input type="password" id="ubahsandi" placeholder="Masukkan Sandi baru" />
-            <span class="toggle-eye" onclick="togglePassword('ubahsandi', this)">🔒</span>
+            <input type="password" id="ubahsandi" placeholder="Masukkan Sandi Baru" />
+            <span class="toggle-eye" onclick="togglePassword('ubahsandi', this)">🚫</span>
         </div>
+
         <label>Konfirmasi Sandi</label>
         <div class="password-wrapper">
-            <input type="password" id="konfirmasiSandi" placeholder="Masukkan Konfirmasi sandi" />
-            <span class="toggle-eye" onclick="togglePassword('konfirmasiSandi', this)">🔒</span>
+            <input type="password" id="konfirmasiSandi" placeholder="Konfirmasi Sandi Baru" />
+            <span class="toggle-eye" onclick="togglePassword('konfirmasiSandi', this)">🚫</span>
         </div>
 
         <button onclick="ubahsandi()">Ubah Sandi</button>
         <p id="msgSandi"></p>
     </div>
 
+    <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
         <a href="dashboard.html" class="dashboard">
-            <img src="https://files.catbox.moe/uu97e9.png" alt="dash">
+            <img src="https://files.catbox.moe/uu97e9.png" alt="Dashboard" />
             <span>Dashboard</span>
         </a>
 
         <a href="transaksi.html" class="transaksi">
-            <img src="https://files.catbox.moe/m09xkz.png" alt="transaksi">
+            <img src="https://files.catbox.moe/m09xkz.png" alt="Transaksi" />
             <span>Transaksi</span>
         </a>
 
         <a href="filter.html" class="filter">
-            <img src="https://files.catbox.moe/kfd70x.png" alt="filter">
+            <img src="https://files.catbox.moe/kfd70x.png" alt="Filter" />
             <span>Filter</span>
         </a>
 
         <a href="filter.html" class="riwayat">
-            <img src="https://files.catbox.moe/3c8dak.png" alt="history">
+            <img src="https://files.catbox.moe/3c8dak.png" alt="Riwayat" />
             <span>Riwayat</span>
         </a>
 
         <a href="profil.html" class="profil">
-            <img src="https://files.catbox.moe/0hc0tq.png" alt="profile">
+            <img src="https://files.catbox.moe/0hc0tq.png" alt="Profil" />
             <span>Profil</span>
         </a>
     </nav>
 
+    <!-- SCRIPT -->
+    <script src="profil.js"></script>
+
 </body>
-<script src="profil.js"></script>
 </html>
