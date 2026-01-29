@@ -1,33 +1,48 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - NAVIRA FINANCE</title>
-    <link rel="stylesheet" href="style.css" />
 
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 
 <body>
-    <!-- Login -->
-    <div class="login">
-        <h1>Login</h1>
-        <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Username" />
-        <label for="pass">Password</label>
-        <div class="password-box">
-            <input type="password" id="password" placeholder="Password">
 
-            <span onclick="togglePassword('password', this)">🔒</span>
+    <!-- LOGIN CONTAINER -->
+    <div class="login-page">
+        <h1>Login</h1>
+
+        <label for="username">Username</label>
+        <input
+            type="text"
+            id="username"
+            placeholder="Username"
+            autocomplete="username"
+        >
+
+        <label for="password">Password</label>
+        <div class="password-box">
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
+            <span onclick="togglePassword('password', this)">🚫</span>
         </div>
 
-        <button onclick="login()">Login</button>
-        <button onclick="daftar()">Daftar</button>
-
+        <button type="button" onclick="login()">Login</button>
+        <button type="button" onclick="daftar()">Daftar</button>
     </div>
+
+    <!-- SCRIPT -->
+    <script src="login.js"></script>
 </body>
-<script src="login.js"></script>
 </html>
