@@ -1,3 +1,34 @@
+/* =====================================================
+   FINANCIAL UI — MODERN • PREMIUM • PROFESSIONAL
+   Theme: Fintech Glassmorphism
+===================================================== */
+
+/* =========================
+   GOOGLE FONTS
+========================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* =========================
+   ROOT VARIABLES
+========================= */
+:root {
+    --bg-dark-1: #0f2027;
+    --bg-dark-2: #203a43;
+    --bg-dark-3: #2c5364;
+
+    --glass-bg: rgba(255, 255, 255, 0.12);
+    --glass-border: rgba(255, 255, 255, 0.18);
+
+    --primary: #00c6ff;
+    --primary-dark: #0072ff;
+
+    --danger: #ff4b2b;
+    --success: #00e096;
+
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.7);
+}
+
 /* =========================
    RESET & GLOBAL
 ========================= */
@@ -10,13 +41,17 @@
 
 body {
     min-height: 100vh;
-    background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
-    color: #fff;
+    background: linear-gradient(145deg,
+        var(--bg-dark-1),
+        var(--bg-dark-2),
+        var(--bg-dark-3)
+    );
+    color: var(--text-main);
     padding-bottom: 90px;
 }
 
 /* =========================
-   CARD BASE
+   CARD / CONTAINER
 ========================= */
 .card,
 .login-page,
@@ -25,26 +60,29 @@ body {
 .rekap-bulan,
 .profilBox,
 .ubahsandi {
-    width: 90%;
+    width: 92%;
     max-width: 460px;
     margin: 22px auto;
     padding: 22px;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    border-radius: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
 }
 
 /* =========================
-   TITLE
+   HEADINGS
 ========================= */
 h1, h2, h3, h4 {
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
 }
+
+h1 { font-size: 24px; }
+h2 { font-size: 20px; }
 
 /* =========================
    LABEL
@@ -53,7 +91,7 @@ label {
     display: block;
     font-size: 13px;
     margin-bottom: 6px;
-    opacity: 0.85;
+    color: var(--text-muted);
 }
 
 /* =========================
@@ -64,23 +102,23 @@ select {
     width: 100%;
     padding: 12px 14px;
     margin-bottom: 14px;
-    border-radius: 12px;
+    border-radius: 14px;
     border: none;
     outline: none;
     background: rgba(255, 255, 255, 0.18);
     color: #fff;
     font-size: 14px;
-    transition: 0.3s;
+    transition: 0.25s ease;
 }
 
 input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.55);
 }
 
 input:focus,
 select:focus {
     background: rgba(255, 255, 255, 0.28);
-    box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.5);
+    box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.45);
 }
 
 select option {
@@ -88,7 +126,7 @@ select option {
 }
 
 /* =========================
-   PASSWORD BOX
+   PASSWORD FIELD
 ========================= */
 .password-box,
 .password-wrapper {
@@ -103,8 +141,8 @@ select option {
     transform: translateY(-50%);
     cursor: pointer;
     font-size: 16px;
-    opacity: 0.8;
-    transition: 0.3s;
+    opacity: 0.75;
+    transition: 0.25s;
 }
 
 .password-box span:hover,
@@ -114,37 +152,39 @@ select option {
 }
 
 /* =========================
-   BUTTON (GLOBAL)
+   BUTTONS
 ========================= */
 button {
     width: 100%;
     padding: 12px;
-    margin-top: 15px;   /* 🔥 JARAK ANTAR BUTTON 15px */
-    border-radius: 14px;
+    margin-top: 15px;
+    border-radius: 16px;
     border: none;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    transition: 0.3s;
+    transition: 0.3s ease;
 }
 
-/* PRIMARY BUTTON */
+/* PRIMARY */
 button.primary,
 #btnSimpan,
 .login-page button:first-of-type,
 .limitanggaran button {
-    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    background: linear-gradient(135deg,
+        var(--primary),
+        var(--primary-dark)
+    );
     color: #fff;
-    box-shadow: 0 8px 18px rgba(0, 114, 255, 0.45);
+    box-shadow: 0 10px 22px rgba(0, 114, 255, 0.45);
 }
 
-button.primary:hover,
-#btnSimpan:hover {
+button.primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(0, 114, 255, 0.65);
+    box-shadow: 0 16px 30px rgba(0, 114, 255, 0.65);
 }
 
-/* SECONDARY BUTTON */
+/* SECONDARY */
 button.secondary,
 .login-page button:last-of-type {
     background: transparent;
@@ -156,36 +196,41 @@ button.secondary:hover {
     background: rgba(255, 255, 255, 0.15);
 }
 
-/* DANGER BUTTON */
+/* DANGER */
 button.danger {
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    box-shadow: 0 8px 18px rgba(255, 75, 43, 0.45);
+    background: linear-gradient(135deg, #ff416c, var(--danger));
+    box-shadow: 0 10px 22px rgba(255, 75, 43, 0.45);
 }
 
 /* =========================
-   INFO TEXT
+   INFO & STATUS
 ========================= */
 #infoLimit {
     margin-top: 10px;
     font-size: 14px;
-    color: #00c6ff;
     font-weight: 500;
+    color: var(--primary);
 }
 
 /* =========================
-   TRANSACTION ITEM
+   TRANSACTION LIST
 ========================= */
 #riwayatTransaksi > div {
     padding: 14px;
     margin-bottom: 12px;
-    border-radius: 14px;
+    border-radius: 16px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
     font-size: 13px;
+    transition: 0.25s;
+}
+
+#riwayatTransaksi > div:hover {
+    background: rgba(255, 255, 255, 0.18);
 }
 
 /* =========================
-   BOTTOM NAV
+   BOTTOM NAVIGATION
 ========================= */
 .bottom-nav {
     position: fixed;
@@ -194,7 +239,7 @@ button.danger {
     width: 100%;
     height: 72px;
     background: rgba(15, 32, 39, 0.95);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -218,9 +263,9 @@ button.danger {
     opacity: 0.8;
 }
 
-.bottom-nav a:hover,
-.bottom-nav a.active {
-    color: #00c6ff;
+.bottom-nav a.active,
+.bottom-nav a:hover {
+    color: var(--primary);
 }
 
 .bottom-nav a:hover img {
@@ -231,9 +276,8 @@ button.danger {
    RESPONSIVE
 ========================= */
 @media (max-width: 480px) {
-    h1 {
-        font-size: 22px;
-    }
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; }
 
     .card,
     .login-page {
