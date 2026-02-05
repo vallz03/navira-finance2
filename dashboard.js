@@ -300,3 +300,22 @@ function tampilkanTransaksiTerbaru(data) {
     trxContainer.appendChild(div);
   });
 }
+
+// =======================
+// INIT & EVENT
+// =======================
+initTahunFilter();
+renderDashboard();
+
+bulanFilter.addEventListener("change", renderDashboard);
+tahunFilter.addEventListener("change", renderDashboard);
+
+document.getElementById("btnBar").addEventListener("click", () => {
+  chartMode = "bar";
+  renderDashboard();
+});
+
+document.getElementById("btnCandle").addEventListener("click", () => {
+  chartMode = "candle";
+  renderDashboard();
+});
