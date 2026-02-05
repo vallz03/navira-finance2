@@ -140,12 +140,7 @@ function renderDashboard() {
   }
 
   // transaksi terbaru
-  tampilkanTransaksiTerbaru(
-    semuaTransaksi.filter(t => {
-      const d = new Date(t.tanggal);
-      return d.getMonth() === activeMonth && d.getFullYear() === activeYear;
-    })
-  );
+  tampilkanTransaksiTerbaru(semuaTransaksi);
 }
 
 // =======================
@@ -266,45 +261,42 @@ function tampilkanCandlestick(data, tahun) {
 // TRANSAKSI TERBARU
 // =======================
 function tampilkanTransaksiTerbaru(data) {
-  trxContainer.innerHTML = "<h1>Transaksi Terbaru</h1>";
+  trxContainer.innerHTML = "<h2>Transaksi Terbaru</h2>";
 
-  if (!data.length) {
-    trxContainer.innerHTML += "<p>Belum ada transaksi</p>";
+  if (!data || !data.length) {
+    trxContainer.innerHTML += `<p class="text-muted">Belum ada transaksi</p>`;
     return;
   }
 
-  data
+  const sorted = [...data]
+    .filter(t => t.tanggal && t.nominal)
     .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
-    .slice(0, 5)
-    .forEach(t => {
-      const div = document.createElement("div");
-      div.className = "trx-item";
-      div.innerHTML = `
-        <b>${t.deskripsi || "-"}</b><br>
-        <small>${t.tanggal} • ${t.metode || "-"}</small><br>
-        <span style="color:${t.jenis === "pemasukan" ? "green" : "red"}">
-          ${t.jenis === "pemasukan" ? "+" : "-"} ${rupiah(t.nominal)}
-        </span>
-      `;
-      trxContainer.appendChild(div);
+    .slice(0, 5);
+
+  sorted.forEach(t => {
+    const isIn = (t.jenis || "").toLowerCase() === "pemasukan";
+    const tanggal = new Date(t.tanggal).toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
     });
+
+    const div = document.createElement("div");
+    div.className = `trx-item ${isIn ? "income" : "expense"}`;
+
+    div.innerHTML = `
+      <div class="trx-top">
+        <strong>${t.deskripsi || "Tanpa deskripsi"}</strong>
+        <span class="trx-amount">
+          ${isIn ? "+" : "-"} ${rupiah(t.nominal)}
+        </span>
+      </div>
+      <div class="trx-bottom">
+        <small>${tanggal}</small>
+        <small>${t.metode || "-"}</small>
+      </div>
+    `;
+
+    trxContainer.appendChild(div);
+  });
 }
-
-// =======================
-// INIT
-// =======================
-document.addEventListener("DOMContentLoaded", () => {
-  initTahunFilter();
-  bulanFilter.addEventListener("change", renderDashboard);
-  tahunFilter.addEventListener("change", renderDashboard);
-});
-
-document.getElementById("btnBar")?.addEventListener("click", () => {
-  chartMode = "bar";
-  renderDashboard();
-});
-
-document.getElementById("btnCandle")?.addEventListener("click", () => {
-  chartMode = "candle";
-  renderDashboard();
-});
