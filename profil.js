@@ -1,3 +1,6 @@
+// ==========================
+// FIREBASE CONFIG
+// ==========================
 const firebaseConfig = {
   apiKey: "API_KEY_KAMU",
   authDomain: "PROJECT_ID.firebaseapp.com",
@@ -8,12 +11,14 @@ const firebaseConfig = {
   appId: "APP_ID"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
 const database = firebase.database();
 
-// === Profil js === //
 // ==========================
-// CEK SESSION LOGIN
+// SESSION LOGIN CHECK
 // ==========================
 const userKey = localStorage.getItem("loginUser");
 
@@ -23,10 +28,12 @@ if (!userKey) {
 }
 
 // ==========================
-// AMBIL DATA USER DARI FIREBASE
+// LOAD USER PROFILE
 // ==========================
-database.ref("users/" + userKey).once("value")
-  .then(snapshot => {
+async function loadProfil() {
+  try {
+    const snapshot = await database.ref(`users/${userKey}`).once("value");
+
     if (!snapshot.exists()) {
       alert("Data user tidak ditemukan");
       return;
@@ -35,18 +42,18 @@ database.ref("users/" + userKey).once("value")
     const data = snapshot.val();
 
     document.getElementById("profilusername").textContent =
-      "Username : " + data.username;
-
-    // password dimasking
-    const maskedPassword = maskPassword(data.password);
+      `Username : ${data.username}`;
 
     document.getElementById("profilpassword").textContent =
-      "Password : " + maskedPassword;
-  })
-  .catch(error => {
+      `Password : ${maskPassword(data.password)}`;
+
+  } catch (error) {
     console.error(error);
     alert("Gagal mengambil data profil");
-  });
+  }
+}
+
+loadProfil();
 
 // ==========================
 // LOGOUT
@@ -56,28 +63,27 @@ function logout() {
   window.location.href = "index.html";
 }
 
+// ==========================
+// TOGGLE PASSWORD VISIBILITY
+// ==========================
 function togglePassword(inputId, el) {
   const input = document.getElementById(inputId);
-  if (input.type === "password") {
-    input.type = "text";
-    el.textContent = "👀";
-  } else {
-    input.type = "password";
-    el.textContent = "🚫";
-  }
+  const isHidden = input.type === "password";
+
+  input.type = isHidden ? "text" : "password";
+  el.textContent = isHidden ? "👀" : "🚫";
 }
 
 // ==========================
-// UBAH SANDI
+// UPDATE PASSWORD
 // ==========================
-function ubahsandi() {
+async function ubahsandi() {
   const sandiLama = document.getElementById("sandiLama").value.trim();
   const sandiBaru = document.getElementById("ubahsandi").value.trim();
   const konfirmasi = document.getElementById("konfirmasiSandi").value.trim();
 
-  // VALIDASI FIELD
   if (!sandiLama || !sandiBaru || !konfirmasi) {
-    alert("Semua data wajib diisi");
+    alert("Semua field wajib diisi");
     return;
   }
 
@@ -91,40 +97,40 @@ function ubahsandi() {
     return;
   }
 
-  // CEK SANDI LAMA
-  database.ref("users/" + userKey).once("value")
-    .then(snapshot => {
-      if (!snapshot.exists()) {
-        throw new Error("Data user tidak ditemukan");
-      }
+  try {
+    const ref = database.ref(`users/${userKey}`);
+    const snapshot = await ref.once("value");
 
-      const data = snapshot.val();
+    if (!snapshot.exists()) {
+      throw new Error("Data user tidak ditemukan");
+    }
 
-      if (data.password !== sandiLama) {
-        throw new Error("Sandi lama salah");
-      }
+    const data = snapshot.val();
 
-      // UPDATE SANDI BARU
-      return database.ref("users/" + userKey).update({
-        password: sandiBaru,
-        updatedAt: new Date().toISOString()
-      });
-    })
-    .then(() => {
-      alert("Sandi berhasil diperbarui");
+    if (data.password !== sandiLama) {
+      throw new Error("Sandi lama salah");
+    }
 
-      // RESET FORM
-      document.getElementById("sandiLama").value = "";
-      document.getElementById("ubahsandi").value = "";
-      document.getElementById("konfirmasiSandi").value = "";
-    })
-    .catch(error => {
-      alert(error.message || "Gagal memperbarui sandi");
-      console.error(error);
+    await ref.update({
+      password: sandiBaru,
+      updatedAt: new Date().toISOString()
     });
+
+    alert("Sandi berhasil diperbarui");
+
+    document.getElementById("sandiLama").value = "";
+    document.getElementById("ubahsandi").value = "";
+    document.getElementById("konfirmasiSandi").value = "";
+
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "Gagal memperbarui sandi");
+  }
 }
 
-
+// ==========================
+// MASK PASSWORD
+// ==========================
 function maskPassword(password, showStart = 1, showEnd = 1) {
   if (!password) return "";
 
@@ -133,8 +139,51 @@ function maskPassword(password, showStart = 1, showEnd = 1) {
   }
 
   const start = password.slice(0, showStart);
-  const end = password.slice(password.length - showEnd);
+  const end = password.slice(-showEnd);
   const masked = "*".repeat(password.length - (showStart + showEnd));
 
-  return start + masked + end;
+  return `${start}${masked}${end}`;
+}
+
+// ==========================
+// DELETE ACCOUNT
+// ==========================
+async function hapusAkun() {
+  const confirmDelete = confirm(
+    "PERINGATAN!\n\nAkun dan seluruh data akan dihapus permanen.\n\nLanjutkan?"
+  );
+  if (!confirmDelete) return;
+
+  const sandi = prompt("Masukkan sandi untuk konfirmasi:");
+  if (!sandi) {
+    alert("Penghapusan dibatalkan");
+    return;
+  }
+
+  try {
+    const userRef = database.ref(`users/${userKey}`);
+    const snapshot = await userRef.once("value");
+
+    if (!snapshot.exists()) {
+      throw new Error("Data user tidak ditemukan");
+    }
+
+    const data = snapshot.val();
+    if (data.password !== sandi) {
+      throw new Error("Sandi salah");
+    }
+
+    await Promise.all([
+      userRef.remove(),
+      database.ref(`Transaksi/${userKey}`).remove()
+    ]);
+
+    alert("Akun berhasil dihapus");
+    localStorage.removeItem("loginUser");
+    window.location.href = "index.html";
+
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "Gagal menghapus akun");
+  }
 }
