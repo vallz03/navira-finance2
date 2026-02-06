@@ -350,3 +350,119 @@ button.danger {
   color: var(--text-muted);
   margin-top: 6px;
 }
+/* ================= ALERT ANGGARAN ================= */
+.alert-anggaran {
+  margin: 20px auto;
+  max-width: 900px;
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+  font-family: 'Inter', sans-serif;
+}
+
+.alert-anggaran.safe {
+  border-left: 6px solid #4CAF50;
+}
+
+.alert-anggaran.warning {
+  border-left: 6px solid #FF9800;
+}
+
+.alert-anggaran.danger {
+  border-left: 6px solid #F44336;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.alert-info {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  transition: width .3s ease;
+}
+
+.progress.safe {
+  background: #4CAF50;
+}
+
+.progress.warning {
+  background: #FF9800;
+}
+
+.progress.danger {
+  background: #F44336;
+}
+
+.alert-percent {
+  text-align: right;
+  font-size: 12px;
+  color: #666;
+  margin-top: 6px;
+}
+.jumlah-data {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+.export-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-export {
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.export-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: #1f2937;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  display: none;
+  min-width: 190px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.export-menu button {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.export-menu button:hover {
+  background: rgba(255,255,255,.08);
+}
+
