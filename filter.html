@@ -2,10 +2,18 @@
 <html lang="id">
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FILTER - NAVIRA FINANCE</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- SheetJS untuk Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+
+  <!-- jsPDF & autotable untuk PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -17,7 +25,6 @@
   <!-- FILTER -->
   <section class="filter-section">
     <h2>Filter Transaksi</h2>
-
     <div class="filter">
       <label for="filterjenis">Pilih Jenis</label>
       <select name="filterjenis" id="filterjenis">
@@ -27,10 +34,15 @@
       </select>
 
       <label for="filterMetode">Metode</label>
-      <input type="text" id="filterMetode" placeholder="Masukkan Metode Pembayaran">
+      <select id="filterMetode">
+        <option value="">Semua Metode</option>
+      </select>
 
       <label for="filterKategori">Kategori</label>
-      <input type="text" id="filterKategori" placeholder="Masukkan Kategori">
+      <select id="filterKategori">
+        <option value="">Semua Kategori</option>
+      </select>
+
 
       <label for="bulan">Pilih Bulan</label>
       <select id="bulan">
@@ -59,26 +71,42 @@
 
   <!-- REKAP -->
   <section class="rekap-section">
-  <div class="rekap-bulan">
-    <div class="rekap-judul" id="judulBulan">-</div>
-
-    <div class="rekap-row">
-      <span>Saldo keluar</span>
-      <span id="saldoKeluar">Rp 0</span>
+    <div class="rekap-bulan">
+      <div class="rekap-judul" id="judulBulan">-</div>
+      <div class="rekap-row sisa">
+        <span>Sisa saldo</span>
+        <span id="sisaSaldo">Rp 0</span>
+      </div>
+      <div class="rekap-row">
+        <span>Saldo keluar</span>
+        <span id="saldoKeluar">Rp 0</span>
+      </div>
+      <div class="rekap-row">
+        <span>Saldo masuk</span>
+        <span id="saldoMasuk">Rp 0</span>
+      </div>
     </div>
 
-    <div class="rekap-row">
-      <span>Saldo masuk</span>
-      <span id="saldoMasuk">Rp 0</span>
+    <div class="export-wrapper">
+      <button class="btn-export" id="btnExport">
+        ⬇ Export
+      </button>
+
+      <div class="export-menu" id="exportMenu">
+        <button onclick="exportExcel()">📊 Export Excel</button>
+        <button onclick="exportPDF()">📄 Export PDF</button>
+        <button onclick="exportSpreadsheet()">📈 Export Spreadsheet</button>
+      </div>
     </div>
-  </div>
-</section>
+
+  </section>
 
   <hr>
 
   <!-- RIWAYAT -->
   <section class="riwayat-section">
     <h3>Riwayat Transaksi</h3>
+    <div id="jumlahData" class="jumlah-data">Menampilkan 0 transaksi</div>
     <div id="riwayatTransaksi"></div>
   </section>
 
@@ -88,22 +116,18 @@
       <img src="https://files.catbox.moe/uu97e9.png" alt="dash">
       <span>Dashboard</span>
     </a>
-
     <a href="transaksi.html" class="nav-item">
       <img src="https://files.catbox.moe/m09xkz.png" alt="transaksi">
       <span>Transaksi</span>
     </a>
-
     <a href="filter.html" class="nav-item">
       <img src="https://files.catbox.moe/kfd70x.png" alt="filter">
       <span>Filter</span>
     </a>
-
     <a href="filter.html" class="nav-item">
       <img src="https://files.catbox.moe/3c8dak.png" alt="history">
       <span>Riwayat</span>
     </a>
-
     <a href="profil.html" class="nav-item">
       <img src="https://files.catbox.moe/0hc0tq.png" alt="profile">
       <span>Profil</span>
