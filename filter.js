@@ -1,6 +1,6 @@
-// =======================
-// FIREBASE CONFIG
-// =======================
+/* =======================
+   FIREBASE CONFIG
+======================= */
 const firebaseConfig = {
   apiKey: "API_KEY_KAMU",
   authDomain: "PROJECT_ID.firebaseapp.com",
@@ -11,286 +11,288 @@ const firebaseConfig = {
   appId: "APP_ID"
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// =======================
-// CEK LOGIN
-// =======================
+/* =======================
+   CEK LOGIN
+======================= */
 const currentUser = localStorage.getItem("loginUser");
 if (!currentUser) {
   alert("Silakan login terlebih dahulu");
-  window.location.href = "index.html";
+  location.href = "index.html";
 }
 
-// =======================
-// FORMAT RUPIAH
-// =======================
-function rupiah(n) {
-  return "Rp " + Number(n || 0).toLocaleString("id-ID");
-}
+/* =======================
+   ELEMENT
+======================= */
+const container   = document.getElementById("riwayatTransaksi");
+const saldoMasuk  = document.getElementById("saldoMasuk");
+const saldoKeluar = document.getElementById("saldoKeluar");
+const sisaSaldo   = document.getElementById("sisaSaldo");
 
-// =======================
-// FORMAT TANGGAL & JAM
-// =======================
-function formatTanggal(tgl) {
-  return tgl.toLocaleDateString("id-ID", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric"
+const filterJenis    = document.getElementById("filterjenis");
+const filterKategori = document.getElementById("filterKategori");
+const filterMetode   = document.getElementById("filterMetode");
+const filterBulan    = document.getElementById("bulan");
+const filterTahun    = document.getElementById("tahun");
+
+const btnExport  = document.getElementById("btnExport");
+const exportMenu = document.getElementById("exportMenu");
+
+/* =======================
+   STATE
+======================= */
+let semuaData = [];
+let dataAktif = [];
+
+/* =======================
+   UTIL
+======================= */
+const rupiah = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
+
+const formatTanggal = t =>
+  new Date(t).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});
+
+const setJudulBulan = t =>
+  document.getElementById("judulBulan").innerText = t;
+
+const updateJumlahData = n =>
+  document.getElementById("jumlahData").innerText =
+    `Menampilkan ${n} transaksi`;
+
+/* =======================
+   REKAP
+======================= */
+function hitungRekap(data){
+  let masuk = 0, keluar = 0;
+
+  data.forEach(d=>{
+    const n = Number(d.nominal)||0;
+    if(d.jenis?.toLowerCase()==="pemasukan") masuk+=n;
+    if(d.jenis?.toLowerCase()==="pengeluaran") keluar+=n;
   });
+
+  saldoMasuk.innerText  = rupiah(masuk);
+  saldoKeluar.innerText = rupiah(keluar);
+  sisaSaldo.innerText   = rupiah(masuk-keluar);
+
+  sisaSaldo.style.color =
+    masuk-keluar>0 ? "#4CAF50" :
+    masuk-keluar<0 ? "#F44336" : "#ccc";
+
+  btnExport.disabled = !data.length;
+  btnExport.style.opacity = data.length ? "1" : ".5";
 }
 
-function formatJam(tgl) {
-  return tgl.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
-// =======================
-// REKAP BULANAN (SEPERTI FOTO)
-// =======================
-function loadRekapBulanan(bulanDipilih = null, tahunDipilih = null) {
-  const now = new Date();
-  const bulan = bulanDipilih !== null ? bulanDipilih : now.getMonth();
-  const tahun = tahunDipilih !== null ? tahunDipilih : now.getFullYear();
-
-  document.getElementById("judulBulan").innerText =
-    new Date(tahun, bulan).toLocaleDateString("id-ID", {
-      month: "long",
-      year: "numeric"
-    });
-
-  let masuk = 0;
-  let keluar = 0;
-
-  db.ref(`Transaksi/${currentUser}`).once("value").then(snapshot => {
-    snapshot.forEach(child => {
-      const d = child.val();
-      if (!d || !d.tanggal || !d.jenis || !d.nominal) return;
-
-      const tgl = new Date(d.tanggal);
-      if (tgl.getMonth() !== bulan || tgl.getFullYear() !== tahun) return;
-
-      const nominal = Number(d.nominal);
-      if (d.jenis.toLowerCase() === "pemasukan") masuk += nominal;
-      if (d.jenis.toLowerCase() === "pengeluaran") keluar += nominal;
-    });
-
-    saldoMasuk.innerText = rupiah(masuk);
-    saldoKeluar.innerText = rupiah(keluar);
-  });
-}
-
-// =======================
-// LOAD RIWAYAT
-// =======================
-function loadRiwayat() {
-  const container = document.getElementById("riwayatTransaksi");
-  container.innerHTML = "<p>Memuat...</p>";
-
-  db.ref(`Transaksi/${currentUser}`).once("value").then(snapshot => {
-    container.innerHTML = "";
-    if (!snapshot.exists()) {
-      container.innerHTML = "<p>Belum ada transaksi</p>";
-      loadRekapBulanan();
-      return;
-    }
-
-    const now = new Date();
-    let data = [];
-
-    snapshot.forEach(child => {
-      data.push({ id: child.key, ...child.val() });
-    });
-
-    data.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-    let bulanTerakhir = "";
-
-    data.forEach(d => {
-      const tgl = new Date(d.tanggal);
-      const keyBulan = tgl.toLocaleDateString("id-ID", {
-        month: "long",
-        year: "numeric"
-      });
-
-      if (keyBulan !== bulanTerakhir) {
-        const h = document.createElement("div");
-        h.className = "bulan-header";
-        h.innerText = keyBulan;
-        container.appendChild(h);
-        bulanTerakhir = keyBulan;
-      }
-
-      renderItem(container, d);
-    });
-
-    loadRekapBulanan();
-  });
-}
-
-// =======================
-// RENDER ITEM + EDIT & HAPUS
-// =======================
-function renderItem(container, d) {
-  const tgl = new Date(d.tanggal);
-  const isMasuk = d.jenis.toLowerCase() === "pemasukan";
-
+/* =======================
+   RENDER ITEM
+======================= */
+function renderItem(d){
+  const masuk = d.jenis.toLowerCase()==="pemasukan";
   const div = document.createElement("div");
-  div.className = "transaksi-item";
+  div.className="transaksi-item";
 
-  div.innerHTML = `
-    <div class="transaksi-icon">${isMasuk ? "👤" : "💳"}</div>
-
+  div.innerHTML=`
+    <div class="transaksi-icon">${masuk?"💵":"💳"}</div>
     <div class="transaksi-info">
-      <div class="transaksi-judul">${isMasuk ? "Transfer" : "Pembayaran"}</div>
-
-      <!-- Hanya Tanggal (tanpa jam) -->
-      <div class="transaksi-tanggal">
-        ${formatTanggal(tgl)}
-      </div>
-
-      <!-- Kategori + Metode -->
-      <small>${d.kategori || "-"} • ${d.metode || "-"}</small>
-
-      <!-- Tambahkan Deskripsi -->
-      <div class="transaksi-deskripsi">
-        ${d.deskripsi ? d.deskripsi : "-"}
-      </div>
+      <div class="transaksi-judul">${d.deskripsi||"-"}</div>
+      <div class="transaksi-tanggal">${formatTanggal(d.tanggal)}</div>
+      <small>${d.kategori||"-"} • ${d.metode||"-"}</small>
     </div>
-
-    <div class="transaksi-nominal ${isMasuk ? "masuk" : "keluar"}">
-      ${isMasuk ? "+" : "-"}${rupiah(d.nominal)}
+    <div class="transaksi-nominal ${masuk?"masuk":"keluar"}">
+      ${masuk?"+":"-"}${rupiah(d.nominal)}
     </div>
-
     <div class="aksi">
-      <button onclick="editTransaksi('${d.id}')">✎ EDIT</button>
-      <button onclick="hapusTransaksi('${d.id}')">⌫ DELETE</button>
+      <button class="btn-edit" data-id="${d.id}">✎</button>
+      <button class="btn-hapus" data-id="${d.id}">⌫</button>
     </div>
   `;
-
   container.appendChild(div);
 }
 
-// =======================
-// EDIT TRANSAKSI
-// =======================
-function editTransaksi(id) {
-  window.location.href = `transaksi.html?edit=${id}`;
-}
+/* =======================
+   FILTER SELECT AUTO
+======================= */
+function isiFilterSelect(data){
+  const kategori = new Set();
+  const metode   = new Set();
 
-// =======================
-// HAPUS TRANSAKSI
-// =======================
-function hapusTransaksi(id) {
-  if (!confirm("Yakin ingin menghapus transaksi ini?")) return;
+  data.forEach(d=>{
+    if(d.kategori) kategori.add(d.kategori);
+    if(d.metode) metode.add(d.metode);
+  });
 
-  db.ref(`Transaksi/${currentUser}/${id}`).remove().then(() => {
-    loadRiwayat();
+  filterKategori.innerHTML = `<option value="">Semua Kategori</option>`;
+  filterMetode.innerHTML   = `<option value="">Semua Metode</option>`;
+
+  [...kategori].sort().forEach(v=>{
+    filterKategori.innerHTML+=`<option value="${v}">${v}</option>`;
+  });
+  [...metode].sort().forEach(v=>{
+    filterMetode.innerHTML+=`<option value="${v}">${v}</option>`;
   });
 }
 
-// =======================
-// FILTER
-// =======================
-function terapkan() {
-  const jenis = document.getElementById("filterjenis").value.toLowerCase();
-  const metode = document.getElementById("filterMetode").value.toLowerCase();
-  const kategori = document.getElementById("filterKategori").value.toLowerCase();
-  const bulanVal = document.getElementById("bulan").value;
-  const tahunVal = document.getElementById("tahun").value;
+/* =======================
+   TAMPILKAN DATA
+======================= */
+function tampilkanData(data, judul){
+  container.innerHTML="";
 
-  const bulan = bulanVal !== "" ? Number(bulanVal) : null;
-  const tahun = tahunVal !== "" ? Number(tahunVal) : null;
+  if(!data.length){
+    container.innerHTML="<p>Data tidak ditemukan</p>";
+    setJudulBulan(judul);
+    updateJumlahData(0);
+    hitungRekap([]);
+    return;
+  }
 
-  const container = document.getElementById("riwayatTransaksi");
-  container.innerHTML = "<p>Memuat...</p>";
+  data.forEach(renderItem);
+  updateJumlahData(data.length);
+  hitungRekap(data);
+  setJudulBulan(judul);
 
-  let data = [];
+  dataAktif = data.map(d=>({
+    Tanggal: formatTanggal(d.tanggal),
+    Jenis: d.jenis,
+    Kategori: d.kategori||"-",
+    Metode: d.metode||"-",
+    Deskripsi: d.deskripsi||"-",
+    Nominal: Number(d.nominal)
+  }));
+}
 
-  db.ref(`Transaksi/${currentUser}`).once("value").then(snapshot => {
-    container.innerHTML = "";
-    if (!snapshot.exists()) {
-      container.innerHTML = "<p>Data tidak ditemukan</p>";
-      return;
-    }
+/* =======================
+   LOAD DATA
+======================= */
+function loadRiwayat(){
+  container.innerHTML="<p>Memuat...</p>";
 
-    snapshot.forEach(child => {
-      const d = child.val();
-      if (!d || !d.tanggal) return;
+  db.ref(`Transaksi/${currentUser}`).once("value").then(snap=>{
+    semuaData=[];
 
-      const tgl = new Date(d.tanggal);
-
-      // FILTER BULAN
-      if (bulan !== null && tgl.getMonth() !== bulan) return;
-
-      // FILTER TAHUN
-      if (tahun !== null && tgl.getFullYear() !== tahun) return;
-
-      // FILTER JENIS
-      if (jenis && d.jenis.toLowerCase() !== jenis) return;
-
-      // FILTER METODE
-      if (metode && !(d.metode || "").toLowerCase().includes(metode)) return;
-
-      // FILTER KATEGORI
-      if (kategori && !(d.kategori || "").toLowerCase().includes(kategori)) return;
-
-      data.push({ id: child.key, ...d });
+    snap.forEach(c=>{
+      semuaData.push({id:c.key,...c.val()});
     });
 
-    if (!data.length) {
-      container.innerHTML = "<p>Data tidak ditemukan</p>";
-      saldoMasuk.innerText = "Rp 0";
-      saldoKeluar.innerText = "Rp 0";
-      return;
-    }
-
-    data.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-    let bulanTerakhir = "";
-
-    data.forEach(d => {
-      const tgl = new Date(d.tanggal);
-      const keyBulan = tgl.toLocaleDateString("id-ID", {
-        month: "long",
-        year: "numeric"
-      });
-
-      if (keyBulan !== bulanTerakhir) {
-        const h = document.createElement("div");
-        h.className = "bulan-header";
-        h.innerText = keyBulan;
-        container.appendChild(h);
-        bulanTerakhir = keyBulan;
-      }
-
-      renderItem(container, d);
-    });
-
-    // 🔥 REKAP DISINKRONKAN DENGAN FILTER
-    loadRekapBulanan(bulan, tahun);
+    semuaData.sort((a,b)=>new Date(b.tanggal)-new Date(a.tanggal));
+    isiFilterSelect(semuaData);
+    tampilkanData(semuaData,"Semua Periode");
   });
 }
 
-function resetfilter() {
-  document.getElementById("filterjenis").value = "";
-  document.getElementById("filterMetode").value = "";
-  document.getElementById("filterKategori").value = "";
-  document.getElementById("bulan").value = "";
-  document.getElementById("tahun").value = new Date().getFullYear();
+/* =======================
+   TERAPKAN FILTER
+======================= */
+function terapkan(){
+  let data=[...semuaData];
 
-  loadRiwayat();
-  loadRekapBulanan();
+  if(filterBulan.value)
+    data=data.filter(d=>new Date(d.tanggal).getMonth()===Number(filterBulan.value));
+
+  if(filterTahun.value)
+    data=data.filter(d=>new Date(d.tanggal).getFullYear()===Number(filterTahun.value));
+
+  if(filterJenis.value)
+    data=data.filter(d=>d.jenis.toLowerCase()===filterJenis.value.toLowerCase());
+
+  if(filterKategori.value)
+    data=data.filter(d=>(d.kategori||"")===filterKategori.value);
+
+  if(filterMetode.value)
+    data=data.filter(d=>(d.metode||"")===filterMetode.value);
+
+  let judul="Semua Periode";
+  if(filterBulan.value && filterTahun.value){
+    judul=new Date(filterTahun.value,filterBulan.value)
+      .toLocaleDateString("id-ID",{month:"long",year:"numeric"});
+  } else if(filterTahun.value){
+    judul=`Tahun ${filterTahun.value}`;
+  } else if(filterBulan.value){
+    judul=new Date(2024,filterBulan.value)
+      .toLocaleDateString("id-ID",{month:"long"});
+  }
+
+  tampilkanData(data,judul);
 }
 
-// =======================
-// AUTO LOAD
-// =======================
-document.addEventListener("DOMContentLoaded", () => {
-  loadRiwayat();
+/* =======================
+   RESET FILTER
+======================= */
+function resetfilter(){
+  filterJenis.value="";
+  filterKategori.value="";
+  filterMetode.value="";
+  filterBulan.value="";
+  filterTahun.value="";
+  tampilkanData(semuaData,"Semua Periode");
+}
+
+/* =======================
+   EXPORT
+======================= */
+function closeExport(){exportMenu.style.display="none";}
+
+function exportExcel(){
+  if(!dataAktif.length) return alert("Tidak ada data");
+  closeExport();
+  const ws=XLSX.utils.json_to_sheet(dataAktif);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,"Transaksi");
+  XLSX.writeFile(wb,`Transaksi_${currentUser}.xlsx`);
+}
+
+function exportPDF(){
+  if(!dataAktif.length) return alert("Tidak ada data");
+  closeExport();
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF("l","mm","a4");
+  doc.text("Laporan Transaksi",14,15);
+  doc.autoTable({
+    startY:20,
+    head:[Object.keys(dataAktif[0])],
+    body:dataAktif.map(Object.values)
+  });
+  doc.save(`Transaksi_${currentUser}.pdf`);
+}
+
+function exportSpreadsheet(){
+  if(!dataAktif.length) return alert("Tidak ada data");
+  closeExport();
+  const csv=[
+    Object.keys(dataAktif[0]).join(","),
+    ...dataAktif.map(d=>Object.values(d).join(","))
+  ].join("\n");
+
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([csv]));
+  a.download=`Transaksi_${currentUser}.csv`;
+  a.click();
+}
+
+/* =======================
+   EVENT
+======================= */
+document.addEventListener("DOMContentLoaded",loadRiwayat);
+
+[filterJenis,filterKategori,filterMetode,filterBulan,filterTahun]
+.forEach(el=>el.addEventListener("change",terapkan));
+
+btnExport.onclick=e=>{
+  e.stopPropagation();
+  exportMenu.style.display=
+    exportMenu.style.display==="block"?"none":"block";
+};
+
+document.addEventListener("click",()=>exportMenu.style.display="none");
+
+container.addEventListener("click",e=>{
+  if(e.target.classList.contains("btn-hapus")){
+    db.ref(`Transaksi/${currentUser}/${e.target.dataset.id}`)
+      .remove().then(loadRiwayat);
+  }
+  if(e.target.classList.contains("btn-edit")){
+    location.href=`transaksi.html?edit=${e.target.dataset.id}`;
+  }
 });
