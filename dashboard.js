@@ -302,6 +302,75 @@ function tampilkanTransaksiTerbaru(data) {
 }
 
 // =======================
+// CEK ANGGARAN
+// =======================
+function cekLimitAnggaran(totalOut) {
+  // JIKA BARU RESET BULAN → JANGAN TIMPA NOTIFIKASI
+  if (isResetBulanan) return;
+
+  if (!limitAnggaranUser || limitAnggaranUser <= 0) {
+    alertAnggaran.style.display = "none";
+    return;
+  }
+
+  const persen = Math.min(
+    Math.round((totalOut / limitAnggaranUser) * 100),
+    100
+  );
+
+  alertAnggaran.style.display = "block";
+  alertAnggaran.className = "alert-anggaran";
+
+  let status = "safe";
+  let icon = "✅";
+  let text = "Anggaran masih aman";
+
+  if (persen >= 100) {
+    status = "danger";
+    icon = "🚨";
+    text = "Anggaran TERLAMPaui";
+  } else if (persen >= 80) {
+    status = "warning";
+    icon = "⚠️";
+    text = "Anggaran hampir habis";
+  }
+
+  alertAnggaran.classList.add(status);
+
+  alertAnggaran.innerHTML = `
+    <div class="alert-header">
+      <span class="alert-icon">${icon}</span>
+      <strong>${text}</strong>
+    </div>
+
+    <div class="alert-info">
+      Pengeluaran: <b>${rupiah(totalOut)}</b> dari <b>${rupiah(limitAnggaranUser)}</b>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress ${status}" style="width:${persen}%"></div>
+    </div>
+
+    <div class="alert-percent">${persen}% terpakai</div>
+  `;
+}
+
+function tampilkanNotifikasiReset() {
+  alertAnggaran.style.display = "block";
+  alertAnggaran.className = "alert-anggaran safe";
+
+  alertAnggaran.innerHTML = `
+    <div class="alert-header">
+      <span class="alert-icon">🔄</span>
+      <strong>Bulan baru dimulai</strong>
+    </div>
+    <div class="alert-info">
+      Anggaran dan perhitungan otomatis direset untuk bulan ini.
+    </div>
+  `;
+}
+
+// =======================
 // INIT & EVENT
 // =======================
 initTahunFilter();
